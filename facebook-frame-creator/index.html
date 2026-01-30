@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Profile Picture Frame Creator - Full Scalability</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #dddfe2;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #1877f2;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: #65676b;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        @media (min-width: 1200px) {
+            .app-container {
+                flex-direction: row;
+            }
+        }
+        
+        .upload-controls-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            flex: 1;
+        }
+        
+        .preview-result-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            flex: 1.2;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 1.8rem;
+        }
+        
+        /* Upload Areas */
+        .upload-areas {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .upload-areas {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .upload-box {
+            border: 2px dashed #1877f2;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f7f9fa;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .upload-box:hover {
+            background-color: #e7f3ff;
+        }
+        
+        .upload-box.profile {
+            border-color: #42b72a;
+        }
+        
+        .upload-box.frame {
+            border-color: #f02849;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .upload-box.profile .upload-icon {
+            color: #42b72a;
+        }
+        
+        .upload-box.frame .upload-icon {
+            color: #f02849;
+        }
+        
+        .upload-box h3 {
+            margin-bottom: 10px;
+            color: #1c1e21;
+        }
+        
+        .upload-box p {
+            color: #65676b;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* Preview Row */
+        .preview-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .preview-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .preview-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1c1e21;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .preview-box {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 5px solid #e4e6eb;
+            position: relative;
+            background-color: #f0f2f5;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;
+            background-color: white;
+        }
+        
+        .default-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #65676b;
+        }
+        
+        .default-preview i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Scaling Controls */
+        .scaling-controls {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #dddfe2;
+        }
+        
+        .control-tabs {
+            display: flex;
+            border-bottom: 1px solid #dddfe2;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #65676b;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #1877f2;
+            border-bottom-color: #1877f2;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1c1e21;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #dddfe2;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1877f2;
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            font-weight: 600;
+            min-width: 50px;
+            text-align: center;
+            color: #1877f2;
+        }
+        
+        .dimension-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #65676b;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .position-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .position-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        /* Result Section */
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            min-height: 500px;
+        }
+        
+        .result-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1c1e21;
+        }
+        
+        .result-preview-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            margin-bottom: 30px;
+            border: 15px solid #e4e6eb;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        .result-preview {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-image {
+            position: absolute;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        
+        .result-frame {
+            position: absolute;
+            object-fit: cover;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        .btn-primary {
+            background-color: #1877f2;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #166fe5;
+        }
+        
+        .btn-secondary {
+            background-color: #e4e6eb;
+            color: #1c1e21;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d8dadf;
+        }
+        
+        .btn-success {
+            background-color: #42b72a;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #36a420;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .quick-btn {
+            padding: 8px 16px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            background-color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-btn:hover {
+            background-color: #f0f2f5;
+        }
+        
+        .instructions {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f7f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #1877f2;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #1c1e21;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .upload-status.success {
+            background-color: #e7f9e7;
+            color: #42b72a;
+            border: 1px solid #b3e6b3;
+        }
+        
+        .upload-status.error {
+            background-color: #fde8e8;
+            color: #f02849;
+            border: 1px solid #f8c6c6;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #65676b;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #bcc0c4;
+        }
+        
+        .preset-frames {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .preset-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #1c1e21;
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .preset-frame {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .preset-frame:hover {
+            border-color: #1877f2;
+            transform: scale(1.05);
+        }
+        
+        .preset-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #dddfe2;
+            color: #65676b;
+            font-size: 0.9rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .drag-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #1877f2;
+            border-radius: 50%;
+            cursor: move;
+            z-index: 100;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        }
+        
+        .drag-handle.tl {
+            top: -10px;
+            left: -10px;
+        }
+        
+        .drag-handle.tr {
+            top: -10px;
+            right: -10px;
+        }
+        
+        .drag-handle.bl {
+            bottom: -10px;
+            left: -10px;
+        }
+        
+        .drag-handle.br {
+            bottom: -10px;
+            right: -10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-facebook"></i>
+                <h1>Profile Picture Frame Creator</h1>
+            </div>
+            <p class="subtitle">Upload your profile picture and a custom frame. Scale, position, and adjust both elements independently for the perfect result.</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="upload-controls-section">
+                <h2 class="section-title"><i class="fas fa-upload"></i> Upload Images</h2>
+                
+                <div class="upload-areas">
+                    <div class="upload-box profile" id="profileUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <h3>Profile Picture</h3>
+                        <p>Upload your photo (JPG, PNG, WebP)</p>
+                        <input type="file" id="profileInput" class="file-input" accept="image/*">
+                        <div class="upload-status" id="profileStatus"></div>
+                    </div>
+                    
+                    <div class="upload-box frame" id="frameUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-border-style"></i>
+                        </div>
+                        <h3>Custom Frame</h3>
+                        <p>Upload a frame (transparent PNG recommended)</p>
+                        <input type="file" id="frameInput" class="file-input" accept="image/*">
+                        <div class="upload-status" id="frameStatus"></div>
+                    </div>
+                </div>
+                
+                <div class="preview-row">
+                    <div class="preview-container">
+                        <div class="preview-label">
+                            <i class="fas fa-user-circle"></i>
+                            Profile Preview
+                        </div>
+                        <div class="preview-box">
+                            <div class="default-preview" id="profileDefaultPreview">
+                                <i class="fas fa-user-circle"></i>
+                                <span>No image</span>
+                            </div>
+                            <img id="profilePreview" class="preview-image" src="" alt="Profile Preview">
+                        </div>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <div class="preview-label">
+                            <i class="fas fa-border-style"></i>
+                            Frame Preview
+                        </div>
+                        <div class="preview-box">
+                            <div class="default-preview" id="frameDefaultPreview">
+                                <i class="fas fa-border-style"></i>
+                                <span>No frame</span>
+                            </div>
+                            <img id="framePreview" class="preview-image" src="" alt="Frame Preview">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scaling-controls">
+                    <div class="control-tabs">
+                        <div class="tab active" data-tab="profile-controls">Profile Picture</div>
+                        <div class="tab" data-tab="frame-controls">Frame</div>
+                        <div class="tab" data-tab="advanced-controls">Advanced</div>
+                    </div>
+                    
+                    <!-- Profile Picture Controls -->
+                    <div class="tab-content active" id="profile-controls">
+                        <div class="control-group">
+                            <label class="control-label">Profile Size: <span id="profileSizeValue">100%</span></label>
+                            <div class="slider-container">
+                                <input type="range" min="10" max="200" value="100" class="slider" id="profileSize">
+                                <div class="slider-value" id="profileSizeDisplay">100%</div>
+                            </div>
+                            <div class="dimension-display">
+                                <span>Small</span>
+                                <span id="profileDimensions">Original</span>
+                                <span>Large</span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Profile Position</label>
+                            <div class="position-controls">
+                                <div class="position-control">
+                                    <label>Horizontal (X)</label>
+                                    <div class="slider-container">
+                                        <input type="range" min="-50" max="50" value="0" class="slider" id="profileX">
+                                        <div class="slider-value" id="profileXDisplay">0</div>
+                                    </div>
+                                </div>
+                                <div class="position-control">
+                                    <label>Vertical (Y)</label>
+                                    <div class="slider-container">
+                                        <input type="range" min="-50" max="50" value="0" class="slider" id="profileY">
+                                        <div class="slider-value" id="profileYDisplay">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Profile Rotation: <span id="profileRotationValue">0°</span></label>
+                            <div class="slider-container">
+                                <input type="range" min="0" max="360" value="0" class="slider" id="profileRotation">
+                                <div class="slider-value" id="profileRotationDisplay">0°</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-btn" id="centerProfile">Center Profile</button>
+                            <button class="quick-btn" id="resetProfileSize">Reset Size</button>
+                            <button class="quick-btn" id="resetProfileRotation">Reset Rotation</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Frame Controls -->
+                    <div class="tab-content" id="frame-controls">
+                        <div class="control-group">
+                            <label class="control-label">Frame Size: <span id="frameSizeValue">100%</span></label>
+                            <div class="slider-container">
+                                <input type="range" min="10" max="300" value="100" class="slider" id="frameSize">
+                                <div class="slider-value" id="frameSizeDisplay">100%</div>
+                            </div>
+                            <div class="dimension-display">
+                                <span>Small</span>
+                                <span id="frameDimensions">Original</span>
+                                <span>Large</span>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Frame Opacity: <span id="frameOpacityValue">100%</span></label>
+                            <div class="slider-container">
+                                <input type="range" min="10" max="100" value="100" class="slider" id="frameOpacity">
+                                <div class="slider-value" id="frameOpacityDisplay">100%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Frame Position</label>
+                            <div class="position-controls">
+                                <div class="position-control">
+                                    <label>Horizontal (X)</label>
+                                    <div class="slider-container">
+                                        <input type="range" min="-50" max="50" value="0" class="slider" id="frameX">
+                                        <div class="slider-value" id="frameXDisplay">0</div>
+                                    </div>
+                                </div>
+                                <div class="position-control">
+                                    <label>Vertical (Y)</label>
+                                    <div class="slider-container">
+                                        <input type="range" min="-50" max="50" value="0" class="slider" id="frameY">
+                                        <div class="slider-value" id="frameYDisplay">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Frame Rotation: <span id="frameRotationValue">0°</span></label>
+                            <div class="slider-container">
+                                <input type="range" min="0" max="360" value="0" class="slider" id="frameRotation">
+                                <div class="slider-value" id="frameRotationDisplay">0°</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-btn" id="centerFrame">Center Frame</button>
+                            <button class="quick-btn" id="resetFrameSize">Reset Size</button>
+                            <button class="quick-btn" id="resetFrameOpacity">Reset Opacity</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Controls -->
+                    <div class="tab-content" id="advanced-controls">
+                        <div class="control-group">
+                            <label class="control-label">Layer Order</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="frameOnTop" checked>
+                                <label for="frameOnTop">Frame on top of profile picture</label>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Blend Mode</label>
+                            <select id="blendMode" class="slider" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #dddfe2;">
+                                <option value="normal">Normal</option>
+                                <option value="multiply">Multiply</option>
+                                <option value="screen">Screen</option>
+                                <option value="overlay">Overlay</option>
+                                <option value="soft-light">Soft Light</option>
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Canvas Size</label>
+                            <select id="canvasSize" class="slider" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #dddfe2;">
+                                <option value="512">512x512 pixels (Standard)</option>
+                                <option value="1024">1024x1024 pixels (HD)</option>
+                                <option value="2048">2048x2048 pixels (High Res)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-btn" id="swapLayers">Swap Layers</button>
+                            <button class="quick-btn" id="resetAll">Reset All Adjustments</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="preset-frames" id="presetFrames">
+                    <div class="preset-title">Quick Frame Presets</div>
+                    <div class="preset-grid" id="presetGrid">
+                        <!-- Preset frames will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-result-section">
+                <h2 class="section-title"><i class="fas fa-eye"></i> Preview & Export</h2>
+                
+                <div class="result-container" id="resultContainer">
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-images"></i>
+                        <h3>Upload Images to Begin</h3>
+                        <p>Upload a profile picture and a frame to see the preview here.</p>
+                        <p style="margin-top: 15px; font-size: 0.9rem; color: #8a8d91;">
+                            <i class="fas fa-lightbulb"></i> Tip: For best results, use a transparent PNG frame
+                        </p>
+                    </div>
+                    
+                    <div class="hidden" id="resultContent">
+                        <h3 class="result-title">Your Framed Profile Picture</h3>
+                        
+                        <div class="result-preview-container">
+                            <div class="result-preview" id="resultPreview">
+                                <img id="resultImage" class="result-image" src="" alt="Profile Picture">
+                                <img id="resultFrame" class="result-frame" src="" alt="Frame">
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="downloadBtn" disabled>
+                                <i class="fas fa-download"></i> Download Image
+                            </button>
+                            <button class="btn btn-success" id="shareBtn" disabled>
+                                <i class="fas fa-share"></i> Share to Facebook
+                            </button>
+                            <button class="btn btn-secondary" id="resetBtn">
+                                <i class="fas fa-redo"></i> Start Over
+                            </button>
+                        </div>
+                        
+                        <div class="quick-actions">
+                            <button class="quick-btn" id="savePreset">Save as Preset</button>
+                            <button class="quick-btn" id="loadSample">Load Sample</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> How to Create the Perfect Framed Profile Picture</h3>
+                    <ol>
+                        <li><strong>Upload your images</strong> - Profile picture first, then a frame (transparent PNG works best)</li>
+                        <li><strong>Scale both independently</strong> - Use the Profile Picture and Frame tabs to adjust size, position, and rotation</li>
+                        <li><strong>Fine-tune positioning</strong> - Use the X and Y sliders to perfectly align your frame</li>
+                        <li><strong>Experiment with layers</strong> - Try putting the frame on top or behind your profile picture</li>
+                        <li><strong>Download and share</strong> - Export your creation in high resolution</li>
+                    </ol>
+                    <p style="margin-top: 10px; font-style: italic;"><strong>Pro Tip:</strong> For circular Facebook profile pictures, make sure your frame design accounts for the circular crop that Facebook applies.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Facebook Profile Picture Frame Creator with Full Scalability - All image processing happens locally in your browser.</p>
+            <p>Not affiliated with Facebook, Inc. | Images are not uploaded to any server.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM elements
+        const profileUploadArea = document.getElementById('profileUploadArea');
+        const frameUploadArea = document.getElementById('frameUploadArea');
+        const profileInput = document.getElementById('profileInput');
+        const frameInput = document.getElementById('frameInput');
+        const profilePreview = document.getElementById('profilePreview');
+        const framePreview = document.getElementById('framePreview');
+        const profileDefaultPreview = document.getElementById('profileDefaultPreview');
+        const frameDefaultPreview = document.getElementById('frameDefaultPreview');
+        const profileStatus = document.getElementById('profileStatus');
+        const frameStatus = document.getElementById('frameStatus');
+        
+        const resultContainer = document.getElementById('resultContainer');
+        const emptyState = document.getElementById('emptyState');
+        const resultContent = document.getElementById('resultContent');
+        const resultImage = document.getElementById('resultImage');
+        const resultFrame = document.getElementById('resultFrame');
+        const resultPreview = document.getElementById('resultPreview');
+        
+        const downloadBtn = document.getElementById('downloadBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // Tab elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Control elements
+        // Profile controls
+        const profileSizeSlider = document.getElementById('profileSize');
+        const profileXSlider = document.getElementById('profileX');
+        const profileYSlider = document.getElementById('profileY');
+        const profileRotationSlider = document.getElementById('profileRotation');
+        
+        // Frame controls
+        const frameSizeSlider = document.getElementById('frameSize');
+        const frameOpacitySlider = document.getElementById('frameOpacity');
+        const frameXSlider = document.getElementById('frameX');
+        const frameYSlider = document.getElementById('frameY');
+        const frameRotationSlider = document.getElementById('frameRotation');
+        
+        // Advanced controls
+        const frameOnTopCheckbox = document.getElementById('frameOnTop');
+        const blendModeSelect = document.getElementById('blendMode');
+        const canvasSizeSelect = document.getElementById('canvasSize');
+        
+        // Display elements
+        const profileSizeDisplay = document.getElementById('profileSizeDisplay');
+        const profileSizeValue = document.getElementById('profileSizeValue');
+        const profileXDisplay = document.getElementById('profileXDisplay');
+        const profileYDisplay = document.getElementById('profileYDisplay');
+        const profileRotationDisplay = document.getElementById('profileRotationDisplay');
+        const profileRotationValue = document.getElementById('profileRotationValue');
+        const profileDimensions = document.getElementById('profileDimensions');
+        
+        const frameSizeDisplay = document.getElementById('frameSizeDisplay');
+        const frameSizeValue = document.getElementById('frameSizeValue');
+        const frameOpacityDisplay = document.getElementById('frameOpacityDisplay');
+        const frameOpacityValue = document.getElementById('frameOpacityValue');
+        const frameXDisplay = document.getElementById('frameXDisplay');
+        const frameYDisplay = document.getElementById('frameYDisplay');
+        const frameRotationDisplay = document.getElementById('frameRotationDisplay');
+        const frameRotationValue = document.getElementById('frameRotationValue');
+        const frameDimensions = document.getElementById('frameDimensions');
+        
+        // Quick action buttons
+        const centerProfileBtn = document.getElementById('centerProfile');
+        const resetProfileSizeBtn = document.getElementById('resetProfileSize');
+        const resetProfileRotationBtn = document.getElementById('resetProfileRotation');
+        const centerFrameBtn = document.getElementById('centerFrame');
+        const resetFrameSizeBtn = document.getElementById('resetFrameSize');
+        const resetFrameOpacityBtn = document.getElementById('resetFrameOpacity');
+        const swapLayersBtn = document.getElementById('swapLayers');
+        const resetAllBtn = document.getElementById('resetAll');
+        const savePresetBtn = document.getElementById('savePreset');
+        const loadSampleBtn = document.getElementById('loadSample');
+        
+        // Variables to track current state
+        let profileImage = null;
+        let frameImage = null;
+        let canvas = null;
+        let ctx = null;
+        
+        // Configuration
+        const config = {
+            profile: {
+                scale: 100,
+                x: 0,
+                y: 0,
+                rotation: 0,
+                originalWidth: 0,
+                originalHeight: 0
+            },
+            frame: {
+                scale: 100,
+                opacity: 100,
+                x: 0,
+                y: 0,
+                rotation: 0,
+                originalWidth: 0,
+                originalHeight: 0
+            },
+            advanced: {
+                frameOnTop: true,
+                blendMode: 'normal',
+                canvasSize: 512
+            }
+        };
+        
+        // Initialize the application
+        function init() {
+            // Setup event listeners for upload areas
+            profileUploadArea.addEventListener('click', () => profileInput.click());
+            frameUploadArea.addEventListener('click', () => frameInput.click());
+            
+            // Setup drag and drop for both upload areas
+            setupDragAndDrop(profileUploadArea, handleProfileUpload);
+            setupDragAndDrop(frameUploadArea, handleFrameUpload);
+            
+            // File input change handlers
+            profileInput.addEventListener('change', (e) => handleFileSelect(e, handleProfileUpload));
+            frameInput.addEventListener('change', (e) => handleFileSelect(e, handleFrameUpload));
+            
+            // Tab click handlers
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+            
+            // Control change handlers - Profile
+            profileSizeSlider.addEventListener('input', () => {
+                config.profile.scale = parseInt(profileSizeSlider.value);
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            profileXSlider.addEventListener('input', () => {
+                config.profile.x = parseInt(profileXSlider.value);
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            profileYSlider.addEventListener('input', () => {
+                config.profile.y = parseInt(profileYSlider.value);
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            profileRotationSlider.addEventListener('input', () => {
+                config.profile.rotation = parseInt(profileRotationSlider.value);
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            // Control change handlers - Frame
+            frameSizeSlider.addEventListener('input', () => {
+                config.frame.scale = parseInt(frameSizeSlider.value);
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            frameOpacitySlider.addEventListener('input', () => {
+                config.frame.opacity = parseInt(frameOpacitySlider.value);
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            frameXSlider.addEventListener('input', () => {
+                config.frame.x = parseInt(frameXSlider.value);
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            frameYSlider.addEventListener('input', () => {
+                config.frame.y = parseInt(frameYSlider.value);
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            frameRotationSlider.addEventListener('input', () => {
+                config.frame.rotation = parseInt(frameRotationSlider.value);
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            // Advanced control handlers
+            frameOnTopCheckbox.addEventListener('change', () => {
+                config.advanced.frameOnTop = frameOnTopCheckbox.checked;
+                updateResult();
+            });
+            
+            blendModeSelect.addEventListener('change', () => {
+                config.advanced.blendMode = blendModeSelect.value;
+                updateResult();
+            });
+            
+            canvasSizeSelect.addEventListener('change', () => {
+                config.advanced.canvasSize = parseInt(canvasSizeSelect.value);
+                updateResult();
+            });
+            
+            // Quick action button handlers
+            centerProfileBtn.addEventListener('click', () => {
+                config.profile.x = 0;
+                config.profile.y = 0;
+                profileXSlider.value = 0;
+                profileYSlider.value = 0;
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            resetProfileSizeBtn.addEventListener('click', () => {
+                config.profile.scale = 100;
+                profileSizeSlider.value = 100;
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            resetProfileRotationBtn.addEventListener('click', () => {
+                config.profile.rotation = 0;
+                profileRotationSlider.value = 0;
+                updateProfileDisplays();
+                updateResult();
+            });
+            
+            centerFrameBtn.addEventListener('click', () => {
+                config.frame.x = 0;
+                config.frame.y = 0;
+                frameXSlider.value = 0;
+                frameYSlider.value = 0;
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            resetFrameSizeBtn.addEventListener('click', () => {
+                config.frame.scale = 100;
+                frameSizeSlider.value = 100;
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            resetFrameOpacityBtn.addEventListener('click', () => {
+                config.frame.opacity = 100;
+                frameOpacitySlider.value = 100;
+                updateFrameDisplays();
+                updateResult();
+            });
+            
+            swapLayersBtn.addEventListener('click', () => {
+                config.advanced.frameOnTop = !config.advanced.frameOnTop;
+                frameOnTopCheckbox.checked = config.advanced.frameOnTop;
+                updateResult();
+            });
+            
+            resetAllBtn.addEventListener('click', () => {
+                resetAllControls();
+                updateResult();
+            });
+            
+            savePresetBtn.addEventListener('click', handleSavePreset);
+            loadSampleBtn.addEventListener('click', loadSampleImages);
+            
+            // Button click handlers
+            downloadBtn.addEventListener('click', handleDownload);
+            shareBtn.addEventListener('click', handleShare);
+            resetBtn.addEventListener('click', handleReset);
+            
+            // Initialize canvas
+            canvas = document.createElement('canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Load sample preset frames
+            loadPresetFrames();
+            
+            // Update initial displays
+            updateProfileDisplays();
+            updateFrameDisplays();
+        }
+        
+        // Setup drag and drop for an element
+        function setupDragAndDrop(element, handler) {
+            element.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                element.style.backgroundColor = '#e7f3ff';
+            });
+            
+            element.addEventListener('dragleave', () => {
+                element.style.backgroundColor = '#f7f9fa';
+            });
+            
+            element.addEventListener('drop', (e) => {
+                e.preventDefault();
+                element.style.backgroundColor = '#f7f9fa';
+                
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    handler(file);
+                }
+            });
+        }
+        
+        // Handle file selection from input
+        function handleFileSelect(e, handler) {
+            const file = e.target.files[0];
+            if (file) {
+                handler(file);
+            }
+        }
+        
+        // Handle profile picture upload
+        function handleProfileUpload(file) {
+            if (!file.type.match('image.*')) {
+                showStatus(profileStatus, 'Please select a valid image file.', 'error');
+                return;
+            }
+            
+            if (file.size > 15 * 1024 * 1024) {
+                showStatus(profileStatus, 'File size must be less than 15MB.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                profileImage = new Image();
+                profileImage.onload = function() {
+                    // Store original dimensions
+                    config.profile.originalWidth = profileImage.width;
+                    config.profile.originalHeight = profileImage.height;
+                    
+                    // Update preview
+                    profilePreview.src = event.target.result;
+                    profilePreview.style.display = 'block';
+                    profileDefaultPreview.style.display = 'none';
+                    
+                    showStatus(profileStatus, 'Profile picture uploaded successfully!', 'success');
+                    
+                    // Update dimensions display
+                    updateDimensionsDisplay();
+                    
+                    // Update result if both images are loaded
+                    updateResult();
+                };
+                profileImage.onerror = function() {
+                    showStatus(profileStatus, 'Error loading image. Please try another file.', 'error');
+                };
+                profileImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Handle frame upload
+        function handleFrameUpload(file) {
+            if (!file.type.match('image.*')) {
+                showStatus(frameStatus, 'Please select a valid image file.', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                frameImage = new Image();
+                frameImage.onload = function() {
+                    // Store original dimensions
+                    config.frame.originalWidth = frameImage.width;
+                    config.frame.originalHeight = frameImage.height;
+                    
+                    // Update preview
+                    framePreview.src = event.target.result;
+                    framePreview.style.display = 'block';
+                    frameDefaultPreview.style.display = 'none';
+                    
+                    showStatus(frameStatus, 'Frame uploaded successfully!', 'success');
+                    
+                    // Update dimensions display
+                    updateDimensionsDisplay();
+                    
+                    // Show preset frames section
+                    document.getElementById('presetFrames').style.display = 'block';
+                    
+                    // Update result if both images are loaded
+                    updateResult();
+                };
+                frameImage.onerror = function() {
+                    showStatus(frameStatus, 'Error loading image. Please try another file.', 'error');
+                };
+                frameImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Show status message
+        function showStatus(element, message, type) {
+            element.textContent = message;
+            element.className = 'upload-status ' + type;
+            
+            // Clear status after 3 seconds
+            setTimeout(() => {
+                element.textContent = '';
+                element.className = 'upload-status';
+            }, 3000);
+        }
+        
+        // Switch between tabs
+        function switchTab(tabId) {
+            // Update tab classes
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update tab content visibility
+            tabContents.forEach(content => {
+                if (content.id === tabId) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+        
+        // Update profile control displays
+        function updateProfileDisplays() {
+            profileSizeDisplay.textContent = `${config.profile.scale}%`;
+            profileSizeValue.textContent = `${config.profile.scale}%`;
+            profileXDisplay.textContent = config.profile.x;
+            profileYDisplay.textContent = config.profile.y;
+            profileRotationDisplay.textContent = `${config.profile.rotation}°`;
+            profileRotationValue.textContent = `${config.profile.rotation}°`;
+        }
+        
+        // Update frame control displays
+        function updateFrameDisplays() {
+            frameSizeDisplay.textContent = `${config.frame.scale}%`;
+            frameSizeValue.textContent = `${config.frame.scale}%`;
+            frameOpacityDisplay.textContent = `${config.frame.opacity}%`;
+            frameOpacityValue.textContent = `${config.frame.opacity}%`;
+            frameXDisplay.textContent = config.frame.x;
+            frameYDisplay.textContent = config.frame.y;
+            frameRotationDisplay.textContent = `${config.frame.rotation}°`;
+            frameRotationValue.textContent = `${config.frame.rotation}°`;
+        }
+        
+        // Update dimensions display
+        function updateDimensionsDisplay() {
+            if (profileImage) {
+                const scaledWidth = Math.round(config.profile.originalWidth * config.profile.scale / 100);
+                const scaledHeight = Math.round(config.profile.originalHeight * config.profile.scale / 100);
+                profileDimensions.textContent = `${scaledWidth} × ${scaledHeight}`;
+            }
+            
+            if (frameImage) {
+                const scaledWidth = Math.round(config.frame.originalWidth * config.frame.scale / 100);
+                const scaledHeight = Math.round(config.frame.originalHeight * config.frame.scale / 100);
+                frameDimensions.textContent = `${scaledWidth} × ${scaledHeight}`;
+            }
+        }
+        
+        // Update the result preview
+        function updateResult() {
+            if (!profileImage || !frameImage) {
+                // Show empty state if not both images are uploaded
+                emptyState.classList.remove('hidden');
+                resultContent.classList.add('hidden');
+                downloadBtn.disabled = true;
+                shareBtn.disabled = true;
+                return;
+            }
+            
+            // Hide empty state and show result
+            emptyState.classList.add('hidden');
+            resultContent.classList.remove('hidden');
+            downloadBtn.disabled = false;
+            shareBtn.disabled = false;
+            
+            // Update result preview with scaled and positioned images
+            updateLivePreview();
+            
+            // Update dimensions display
+            updateDimensionsDisplay();
+            
+            // Create the final image for download
+            createFinalImage();
+        }
+        
+        // Update live preview in result area
+        function updateLivePreview() {
+            // Clear previous preview
+            resultImage.src = '';
+            resultFrame.src = '';
+            
+            // Set image sources
+            resultImage.src = profileImage.src;
+            resultFrame.src = frameImage.src;
+            
+            // Calculate dimensions and positions for preview (350px container)
+            const previewSize = 350;
+            
+            // Profile picture scaling and positioning
+            const profileScale = config.profile.scale / 100;
+            const profileWidth = previewSize * profileScale;
+            const profileHeight = profileWidth * (profileImage.height / profileImage.width);
+            
+            // Center the profile picture with offset
+            const profileX = (previewSize - profileWidth) / 2 + (config.profile.x * previewSize / 100);
+            const profileY = (previewSize - profileHeight) / 2 + (config.profile.y * previewSize / 100);
+            
+            // Apply profile transformations
+            resultImage.style.width = `${profileWidth}px`;
+            resultImage.style.height = `${profileHeight}px`;
+            resultImage.style.left = `${profileX}px`;
+            resultImage.style.top = `${profileY}px`;
+            resultImage.style.transform = `rotate(${config.profile.rotation}deg)`;
+            
+            // Frame scaling and positioning
+            const frameScale = config.frame.scale / 100;
+            const frameWidth = previewSize * frameScale;
+            const frameHeight = frameWidth * (frameImage.height / frameImage.width);
+            
+            // Center the frame with offset
+            const frameX = (previewSize - frameWidth) / 2 + (config.frame.x * previewSize / 100);
+            const frameY = (previewSize - frameHeight) / 2 + (config.frame.y * previewSize / 100);
+            
+            // Apply frame transformations
+            resultFrame.style.width = `${frameWidth}px`;
+            resultFrame.style.height = `${frameHeight}px`;
+            resultFrame.style.left = `${frameX}px`;
+            resultFrame.style.top = `${frameY}px`;
+            resultFrame.style.opacity = `${config.frame.opacity / 100}`;
+            resultFrame.style.transform = `rotate(${config.frame.rotation}deg)`;
+            resultFrame.style.mixBlendMode = config.advanced.blendMode;
+            
+            // Set layer order
+            if (config.advanced.frameOnTop) {
+                resultImage.style.zIndex = '1';
+                resultFrame.style.zIndex = '2';
+            } else {
+                resultImage.style.zIndex = '2';
+                resultFrame.style.zIndex = '1';
+            }
+        }
+        
+        // Create the final composited image for download
+        function createFinalImage() {
+            if (!profileImage || !frameImage) return;
+            
+            // Set canvas size
+            const canvasSize = config.advanced.canvasSize;
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            
+            // Calculate scaling factors for final image
+            const profileScale = config.profile.scale / 100;
+            const frameScale = config.frame.scale / 100;
+            
+            // Calculate dimensions
+            const profileWidth = canvasSize * profileScale;
+            const profileHeight = profileWidth * (profileImage.height / profileImage.width);
+            
+            const frameWidth = canvasSize * frameScale;
+            const frameHeight = frameWidth * (frameImage.height / frameImage.width);
+            
+            // Calculate positions with offset
+            const profileX = (canvasSize - profileWidth) / 2 + (config.profile.x * canvasSize / 100);
+            const profileY = (canvasSize - profileHeight) / 2 + (config.profile.y * canvasSize / 100);
+            
+            const frameX = (canvasSize - frameWidth) / 2 + (config.frame.x * canvasSize / 100);
+            const frameY = (canvasSize - frameHeight) / 2 + (config.frame.y * canvasSize / 100);
+            
+            // Determine drawing order
+            if (config.advanced.frameOnTop) {
+                // Draw profile first, then frame on top
+                drawImageWithRotation(ctx, profileImage, profileX, profileY, profileWidth, profileHeight, config.profile.rotation);
+                ctx.globalAlpha = config.frame.opacity / 100;
+                ctx.globalCompositeOperation = config.advanced.blendMode;
+                drawImageWithRotation(ctx, frameImage, frameX, frameY, frameWidth, frameHeight, config.frame.rotation);
+            } else {
+                // Draw frame first, then profile on top
+                ctx.globalAlpha = config.frame.opacity / 100;
+                ctx.globalCompositeOperation = config.advanced.blendMode;
+                drawImageWithRotation(ctx, frameImage, frameX, frameY, frameWidth, frameHeight, config.frame.rotation);
+                
+                // Reset composite operation and alpha for profile
+                ctx.globalAlpha = 1.0;
+                ctx.globalCompositeOperation = 'source-over';
+                drawImageWithRotation(ctx, profileImage, profileX, profileY, profileWidth, profileHeight, config.profile.rotation);
+            }
+            
+            // Reset context settings
+            ctx.globalAlpha = 1.0;
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        // Draw an image with rotation
+        function drawImageWithRotation(context, image, x, y, width, height, rotation) {
+            if (rotation === 0) {
+                context.drawImage(image, x, y, width, height);
+                return;
+            }
+            
+            context.save();
+            context.translate(x + width/2, y + height/2);
+            context.rotate(rotation * Math.PI / 180);
+            context.drawImage(image, -width/2, -height/2, width, height);
+            context.restore();
+        }
+        
+        // Reset all controls to default values
+        function resetAllControls() {
+            // Reset profile controls
+            config.profile.scale = 100;
+            config.profile.x = 0;
+            config.profile.y = 0;
+            config.profile.rotation = 0;
+            
+            profileSizeSlider.value = 100;
+            profileXSlider.value = 0;
+            profileYSlider.value = 0;
+            profileRotationSlider.value = 0;
+            
+            // Reset frame controls
+            config.frame.scale = 100;
+            config.frame.opacity = 100;
+            config.frame.x = 0;
+            config.frame.y = 0;
+            config.frame.rotation = 0;
+            
+            frameSizeSlider.value = 100;
+            frameOpacitySlider.value = 100;
+            frameXSlider.value = 0;
+            frameYSlider.value = 0;
+            frameRotationSlider.value = 0;
+            
+            // Reset advanced controls
+            config.advanced.frameOnTop = true;
+            config.advanced.blendMode = 'normal';
+            config.advanced.canvasSize = 512;
+            
+            frameOnTopCheckbox.checked = true;
+            blendModeSelect.value = 'normal';
+            canvasSizeSelect.value = '512';
+            
+            // Update displays
+            updateProfileDisplays();
+            updateFrameDisplays();
+        }
+        
+        // Handle download button click
+        function handleDownload() {
+            if (!canvas) {
+                alert('Please upload both images first.');
+                return;
+            }
+            
+            // Create a temporary link to download the image
+            const link = document.createElement('a');
+            link.download = `facebook-profile-frame-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Handle share button click
+        function handleShare() {
+            if (!canvas) {
+                alert('Please upload both images first.');
+                return;
+            }
+            
+            // In a real implementation, this would integrate with Facebook API
+            alert('To share your framed profile picture on Facebook:\n\n1. Download the image using the "Download Image" button\n2. Go to Facebook and update your profile picture\n3. Select the downloaded image from your device\n\nFor a production app, this would use the Facebook SDK for direct sharing.');
+        }
+        
+        // Handle reset button click
+        function handleReset() {
+            // Reset all state
+            profileImage = null;
+            frameImage = null;
+            
+            // Reset UI
+            profilePreview.src = '';
+            profilePreview.style.display = 'none';
+            profileDefaultPreview.style.display = 'flex';
+            profileInput.value = '';
+            
+            framePreview.src = '';
+            framePreview.style.display = 'none';
+            frameDefaultPreview.style.display = 'flex';
+            frameInput.value = '';
+            
+            profileStatus.textContent = '';
+            frameStatus.textContent = '';
+            
+            // Hide preset frames
+            document.getElementById('presetFrames').style.display = 'none';
+            
+            // Reset all controls
+            resetAllControls();
+            
+            // Show empty state
+            emptyState.classList.remove('hidden');
+            resultContent.classList.add('hidden');
+            downloadBtn.disabled = true;
+            shareBtn.disabled = true;
+        }
+        
+        // Load preset frames
+        function loadPresetFrames() {
+            const presetGrid = document.getElementById('presetGrid');
+            
+            // Create sample preset frames using CSS (in a real app, these would be actual images)
+            const presets = [
+                { name: 'Celebration', color: '#FFD700' },
+                { name: 'Pride', color: '#FF0000' },
+                { name: 'Holiday', color: '#228B22' },
+                { name: 'Support', color: '#0000FF' }
+            ];
+            
+            presets.forEach(preset => {
+                const presetElement = document.createElement('div');
+                presetElement.className = 'preset-frame';
+                presetElement.title = `Load ${preset.name} frame`;
+                
+                // Create a visual representation of the frame
+                presetElement.style.backgroundColor = preset.color;
+                presetElement.style.display = 'flex';
+                presetElement.style.alignItems = 'center';
+                presetElement.style.justifyContent = 'center';
+                presetElement.style.color = 'white';
+                presetElement.style.fontWeight = 'bold';
+                presetElement.style.fontSize = '0.8rem';
+                presetElement.textContent = preset.name;
+                
+                presetElement.addEventListener('click', () => {
+                    // In a real app, this would load an actual frame image
+                    // For demo, we'll just show a message
+                    showStatus(frameStatus, `"${preset.name}" frame loaded (sample)`, 'success');
+                    
+                    // Update frame preview with a sample
+                    framePreview.style.display = 'block';
+                    frameDefaultPreview.style.display = 'none';
+                    framePreview.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="${preset.color}" fill-opacity="0.3"/><circle cx="100" cy="100" r="80" fill="none" stroke="white" stroke-width="10"/></svg>`;
+                    
+                    // Create a sample frame image
+                    frameImage = new Image();
+                    frameImage.onload = function() {
+                        config.frame.originalWidth = 200;
+                        config.frame.originalHeight = 200;
+                        updateResult();
+                    };
+                    frameImage.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="${preset.color}" fill-opacity="0.3"/><circle cx="100" cy="100" r="80" fill="none" stroke="white" stroke-width="10"/></svg>`;
+                });
+                
+                presetGrid.appendChild(presetElement);
+            });
+        }
+        
+        // Handle save preset
+        function handleSavePreset() {
+            if (!profileImage || !frameImage) {
+                alert('Please upload both images first.');
+                return;
+            }
+            
+            const presetName = prompt('Enter a name for this preset:', 'My Frame Preset');
+            if (presetName) {
+                alert(`Preset "${presetName}" saved! In a production app, this would save your current settings.`);
+                // In a real app, you would save the configuration to localStorage or a server
+            }
+        }
+        
+        // Load sample images for demonstration
+        function loadSampleImages() {
+            // Create a sample profile picture
+            const sampleProfile = new Image();
+            sampleProfile.onload = function() {
+                profileImage = sampleProfile;
+                config.profile.originalWidth = sampleProfile.width;
+                config.profile.originalHeight = sampleProfile.height;
+                
+                profilePreview.src = sampleProfile.src;
+                profilePreview.style.display = 'block';
+                profileDefaultPreview.style.display = 'none';
+                
+                showStatus(profileStatus, 'Sample profile picture loaded!', 'success');
+                
+                // Create a sample frame
+                const sampleFrame = new Image();
+                sampleFrame.onload = function() {
+                    frameImage = sampleFrame;
+                    config.frame.originalWidth = sampleFrame.width;
+                    config.frame.originalHeight = sampleFrame.height;
+                    
+                    framePreview.src = sampleFrame.src;
+                    framePreview.style.display = 'block';
+                    frameDefaultPreview.style.display = 'none';
+                    
+                    showStatus(frameStatus, 'Sample frame loaded!', 'success');
+                    
+                    // Show preset frames section
+                    document.getElementById('presetFrames').style.display = 'block';
+                    
+                    // Update result
+                    updateResult();
+                };
+                
+                // Create a circular frame sample
+                sampleFrame.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><defs><radialGradient id="grad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%231877F2" stop-opacity="0.7"/><stop offset="100%" stop-color="%2342b72a" stop-opacity="0.3"/></radialGradient></defs><circle cx="200" cy="200" r="180" fill="url(%23grad)" stroke="%23FFD700" stroke-width="15"/><circle cx="200" cy="200" r="150" fill="none" stroke="white" stroke-width="8" stroke-dasharray="20,10"/></svg>`;
+            };
+            
+            // Create a sample profile picture using SVG
+            sampleProfile.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%231877F2"/><stop offset="100%" stop-color="%2342b72a"/></linearGradient></defs><rect width="400" height="400" fill="url(%23bg)"/><circle cx="200" cy="150" r="80" fill="%23f0f2f5"/><path d="M100 300 Q200 350 300 300 L300 400 L100 400 Z" fill="%23f0f2f5"/></svg>`;
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
